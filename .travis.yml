@@ -1,0 +1,22 @@
+language: python
+python:
+  - "2.7"
+
+# install dependencies
+install:
+  - pip install -r requirements.txt
+
+# run command
+script:
+  chmod +x build.sh && ./build.sh
+  
+after_success:
+deploy:
+  provider: releases
+  api_key: ${GH_TOKEN}
+  file_glob: true
+  file:
+    dist/${RELEASE}-*
+  skip_cleanup: true
+#   on:
+#     tags: true

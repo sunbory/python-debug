@@ -1,6 +1,6 @@
 import sclient
 
-Class Rinetd(object):
+class Rinetd(object):
 
     def __init__(self):
         self.conf="./rinetd/rinetd.conf"

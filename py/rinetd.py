@@ -18,7 +18,7 @@ class Rinetd(object):
         tmpport=10000
         blank = " "
         for target in targets:
-            f.writelines((blank.join(self.host, tmpport, target["host"], target["port"]) + "\n").encode("utf-8"))
+            f.writelines((blank.join(self.host, tmpport, target["Host"], target["Port"]) + "\n").encode("utf-8"))
             target["pHost"]=self.host
             target["pPort"]=tmpport
             tmpport = tmpport + 1

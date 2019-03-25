@@ -20,7 +20,7 @@ class SClient(object):
         self.client.connect(hostname=hostname, port=port, username=username, password=password, pkey=None,
                       allow_agent=False, look_for_keys=False, compress=False)
         
-        atexit.register(self.close)
+        atexit.register(self._close)
         # https://allenwind.github.io/2018/01/17/Python%E7%A8%8B%E5%BA%8F%E9%80%80%E5%87%BA%E6%97%B6%E7%9A%84%E5%9B%9E%E8%B0%83/
         
     def excute_cmd(self, command):
@@ -95,6 +95,6 @@ class SClient(object):
                 return
             print "get_file_from_vm" + self.host + ":", self.port, "failed, error is ", e
             
-    def close(self):
+    def _close(self):
         self.client.close()
 

@@ -23,8 +23,6 @@ class SClient(object):
         atexit.register(self.close)
         # https://allenwind.github.io/2018/01/17/Python%E7%A8%8B%E5%BA%8F%E9%80%80%E5%87%BA%E6%97%B6%E7%9A%84%E5%9B%9E%E8%B0%83/
         
-                      
-    
     def excute_cmd(self, command):
     '''
         ssh登录远程主机并执行单条命令

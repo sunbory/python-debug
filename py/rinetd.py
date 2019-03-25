@@ -17,10 +17,10 @@ class Rinetd(object):
         f = open(self.conf, 'a')
         tmpport=10000
         blank = " "
-        for map in targets:
-            f.writelines((blank.join(self.host, tmpport, map.host, map.port) + "\n").encode("utf-8"))
-            targets.phost=self.host
-            targets.pport=tmpport
+        for target in targets:
+            f.writelines((blank.join(self.host, tmpport, target["host"], target["port"]) + "\n").encode("utf-8"))
+            target["phost"]=self.host
+            target["pport"]=tmpport
             tmpport = tmpport + 1
         f.close()
         

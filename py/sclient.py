@@ -5,6 +5,8 @@ from contextlib import closing
 ERR_LOG_PATH = "./results/error.log"
 SSH_LOG_PATH = "./results/ssh.log"
 
+# https://blog.csdn.net/huithe/article/details/7484606
+# https://blog.csdn.net/yiifaa/article/details/78068962
 
 class SClient(object):
     

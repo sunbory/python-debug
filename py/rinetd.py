@@ -5,39 +5,41 @@ class Rinetd(object):
     def __init__(self):
         self.conf="./rinetd/rinetd.conf"
     
-    def set_host(hostname, port, username, password):
+    def set_host(hostname, port=22, username, password):
         self.host=hostname
         self.port=port
         self.user=username
         self.pwd=password
+        self.client=sclient.SClient(self.host, self.port, self.user, self.pwd)
     
-    def gen_config(self, maps):
+    def install(self, targets):  
+        # generate configs for rinetd
         f = open(self.conf, 'a')
+        tmpport=10000
         blank = " "
-        for map in maps:
-            f.writelines((blank.join(self.host, map.localport, map.remotehost, map.remoteport) + "\n").encode("utf-8"))
+        for map in targets:
+            f.writelines((blank.join(self.host, tmpport, map.host, map.port) + "\n").encode("utf-8"))
+            targets.phost=self.host
+            targets.pport=tmpport
+            tmpport = tmpport + 1
         f.close()
         
-    def install(self):
-        client = sclient.SClient(self.host, self.port, self.user, self.pwd)
-        client.send_dir("./rinetd/", "/home/")
-        
+        # start proc in target host
+        self.client.send_dir("./rinetd/", "/home/")        
         cmds=[
             "cd /home/rinetd",
             "chmod +x *.sh",
             "bash start.sh"
         ]
-        client.excute_cmds(cmds)
-        client.close()
-    
+        self.client.excute_cmds(cmds)
+
     def uninstall(self):
-        client = sclient.SClient(self.host, self.port, self.user, self.pwd)
         cmds=[
             "cd /home/rinetd",
             "chmod +x *.sh",
             "bash stop.sh",
             "cd /home && rm -rf ./rinetd"
         ]
-        client.excute_cmds(cmds)
-        client.close()
+        self.client.excute_cmds(cmds)
+
         

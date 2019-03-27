@@ -8,6 +8,7 @@ SSH_LOG_PATH = "./results/ssh.log"
 # https://blog.csdn.net/huithe/article/details/7484606
 # https://blog.csdn.net/yiifaa/article/details/78068962
 
+# https://adimian.com/blog/2014/10/paramiko-and-corporate-proxies/
 class SClient(object):
     
     def __init__(self, hostname, port, username, password):

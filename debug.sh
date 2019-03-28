@@ -5,7 +5,9 @@ Start)
     docker run -d --rm -p 3000:3000 -v $(pwd):/opt/ remote-debugging-docker
     ;;
 Stop)
-    docker stop $(docker ps | awk '/remote-debugging-docker/{print $1}')
+    for id in $(docker ps | awk '/remote-debugging-docker/{print $1}'); do
+        docker stop ${id}
+    done
     ;;
 *)    
     while true; do

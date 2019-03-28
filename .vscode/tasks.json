@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build docker",
+            "label": "Build docker for debug",
             "type": "shell",
             "command": "ssh",
             "args": [
@@ -18,12 +18,26 @@
             "problemMatcher": []
         },
         {
-            "label": "Restart Remote docker for debug",
+            "label": "Start Remote docker for debug",
             "type": "shell",
             "command": "ssh",
             "args": [
                 "root@${config:RemoteDebug.host}",
-                "cd ${config:RemoteDebug.path}; docker run -d --rm -p 3000:3000 -v $(pwd):/opt/ remote-debugging-docker"
+                "cd ${config:RemoteDebug.path}; bash debug.sh Start"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Stop Remote docker for debug",
+            "type": "shell",
+            "command": "ssh",
+            "args": [
+                "root@${config:RemoteDebug.host}",
+                "cd ${config:RemoteDebug.path}; bash debug.sh Stop"
             ],
             "group": {
                 "kind": "build",

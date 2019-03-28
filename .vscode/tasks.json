@@ -23,7 +23,7 @@
             "command": "ssh",
             "args": [
                 "root@${config:RemoteDebug.host}",
-                "cd ${config:RemoteDebug.path}; docker run -it --rm -p 3000:3000 -v $(pwd):/opt/ remote-debugging-docker"
+                "cd ${config:RemoteDebug.path}; docker run -d --rm -p 3000:3000 -v $(pwd):/opt/ remote-debugging-docker"
             ],
             "group": {
                 "kind": "build",

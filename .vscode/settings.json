@@ -1,0 +1,16 @@
+{
+    "sshextension.serverList": [
+        {
+            "name": "root@10.10.10.10",
+            "host": "10.10.10.10",
+            "port": 22,
+            "username": "root",
+            "path": "/opt/workplace"
+        }
+    ],
+    "RemoteDebug": {
+        "host": "10.10.10.10",
+        "path": "/opt/workplace/python/tools/"
+    },
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe"
+}

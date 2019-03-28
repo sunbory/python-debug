@@ -5,4 +5,4 @@ COPY requirements .
 RUN pip install -r requirements
 EXPOSE 3000
 WORKDIR /opt/
-CMD ["python", "py"]
+CMD ["/bin/bash", "debug.sh"]

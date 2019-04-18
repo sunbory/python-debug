@@ -37,8 +37,7 @@ class SClient(object):
         self.client.connect(hostname=self.host, port=self.port, username=self.user, password=self.pwd, sock=sock)
         
         atexit.register(self._close)
-        
-        
+                
     def exec(self, cmds):
         '''
             ssh登录远程主机并执行命令
@@ -82,11 +81,8 @@ class SClient(object):
     def _close(self):
         self.client.close()
 
-
 def progress(filename, size, sent):
     sys.stdout.write("%s\'s progress: %.2f%%   \r" % (filename, float(sent)/float(size)*100))
-
-
 
 class SProxy(object):
     def __init__(self, host, port, user, password):

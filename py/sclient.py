@@ -4,8 +4,6 @@ import paramiko
 from scp import SCPClient
 # import scpclient
 # from contextlib import closing
-ERR_LOG_PATH = "./results/error.log"
-SSH_LOG_PATH = "./results/ssh.log"
 
 # ssh -o ProxyCommand="ssh -W %h:%p -q root@10.251.139.76" root@10.251.140.160
 # https://www.programcreek.com/python/example/52881/paramiko.ProxyCommand
@@ -18,7 +16,7 @@ SSH_LOG_PATH = "./results/ssh.log"
 
 class SClient(object):
     
-    def __init__(self, host, port, user, password, proxy=None):
+    def __init__(self, host, port, user, password):
         # paramiko.util.log_to_file(SSH_LOG_PATH)
         self.host=host
         self.port=port
@@ -27,21 +25,26 @@ class SClient(object):
         self.client = paramiko.SSHClient()
         self.client.load_system_host_keys()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.proxy = proxy
+        self._connected = False
 
-    def connect(self):
+    def connect(self, use_proxy=None):
         sock = None
-        if self.proxy:
-            sock = self.proxy.open(self)
-
-        self.client.connect(hostname=self.host, port=self.port, username=self.user, password=self.pwd, sock=sock)
-        
-        atexit.register(self._close)
+        if isinstance(use_proxy, SClient):
+            sock = use_proxy.open_channel(self)
+        try:
+            self.client.connect(hostname=self.host, port=self.port, username=self.user, password=self.pwd, sock=sock)
+            self._connected = True
+        except Exception as e:
+            pass
+        finally:
+            atexit.register(self._close)
                 
     def exec(self, cmds):
         '''
             ssh登录远程主机并执行命令
         '''
+        if not self._connected:
+            self.connect()
         try:
             rst = []
             if isinstance(cmds, list):
@@ -62,6 +65,8 @@ class SClient(object):
         '''
             上传文件或者目录到远程主机
         '''
+        if not self._connected:
+            self.connect()
         try:
             with SCPClient(self.client.get_transport(), progress=progress) as scp:
                 scp.put(files, remote_path, recursive=isDir)
@@ -72,6 +77,8 @@ class SClient(object):
         '''
             从远程主机下载文件或者目录到本地
         '''
+        if not self._connected:
+            self.connect()
         try:
             with SCPClient(self.client.get_transport(), progress=progress) as scp:
                 scp.get(remote_path, local_path, recursive=isDir)
@@ -81,31 +88,18 @@ class SClient(object):
     def _close(self):
         self.client.close()
 
+    def open_channel(self, host):
+        sock = None
+        if host:
+            if not self._connected:
+                self.connect()
+            dest_addr = (host.host, host.port)
+            local_addr = (self.host, self.port)
+            transport = self.client.get_transport()
+            sock = transport.open_channel("direct-tcpip", dest_addr, local_addr)
+
+        return sock
+
 def progress(filename, size, sent):
     sys.stdout.write("%s\'s progress: %.2f%%   \r" % (filename, float(sent)/float(size)*100))
 
-class SProxy(object):
-    def __init__(self, host, port, user, password):
-        self.host=host
-        self.port=port
-        self.user=user
-        self.pwd=password
-        self.client=paramiko.SSHClient()
-        self.client.load_system_host_keys()
-        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.client.connect(hostname=self.host, port=self.port, username=self.user, password=self.pwd)
-        
-    def open(self, sclient=None):
-        self.proxy = None
-        if sclient:
-            dest_addr = (sclient.host, sclient.port)
-            local_addr = (self.host, self.port)
-            transport = self.client.get_transport()
-            self.proxy = transport.open_channel("direct-tcpip", dest_addr, local_addr)
-
-            atexit.register(self._close)
-
-        return self.proxy
-
-    def _close(self):
-        self.client.close()

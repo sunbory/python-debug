@@ -1,7 +1,29 @@
 #!/bin/bash
 #
+ROOT_PATH=$(cd $(dirname "$0") && pwd)
 
-repo_url=https://github.com/sunbory/pybuild/archive/master.zip
-if ! curl -fsSL -o "pypuild.zip" "${repo_url}"; then
-    fail "failed to download pypuild binary from ${repo_url}"
+export SRC_PATH=${ROOT_PATH}/py
+export DIST_PATH=${ROOT_PATH}/dist
+
+export ENTRY_SCRIPT=${SRC_PATH}/__main__.py
+export RELEASE="main"
+
+if [ -d ${DIST_PATH} ];then
+    echo "delete old dist ${DIST_PATH}"
+    rm -rf ${DIST_PATH}
 fi
+
+case $1 in
+docker)
+    docker build -f build/Dockerfile -t python-build  .
+
+    docker run -it --rm -v $(pwd):/opt/ python-build
+    ;;
+*)    
+    pyinstaller -y build/main.spec
+    ;;
+esac
+
+
+
+

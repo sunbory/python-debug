@@ -9,7 +9,7 @@
             "command": "ssh",
             "args": [
                 "root@${config:RemoteDebug.host}",
-                "cd ${config:RemoteDebug.path}; docker build -t remote-debugging-docker ."
+                "cd ${config:RemoteDebug.path}; bash debug.sh build"
             ],
             "group": {
                 "kind": "build",
@@ -23,7 +23,7 @@
             "command": "ssh",
             "args": [
                 "root@${config:RemoteDebug.host}",
-                "cd ${config:RemoteDebug.path}; bash debug.sh Start"
+                "cd ${config:RemoteDebug.path}; bash debug.sh start"
             ],
             "group": {
                 "kind": "build",
@@ -37,7 +37,7 @@
             "command": "ssh",
             "args": [
                 "root@${config:RemoteDebug.host}",
-                "cd ${config:RemoteDebug.path}; bash debug.sh Stop"
+                "cd ${config:RemoteDebug.path}; bash debug.sh stop"
             ],
             "group": {
                 "kind": "build",

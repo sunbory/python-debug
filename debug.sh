@@ -1,11 +1,16 @@
 #!/bin/bash
+#
+ROOT_PATH=$(cd $(dirname "$0") && pwd)
 
 case $1 in
-Start)
-    docker run -d --rm -p 3000:3000 -v $(pwd):/opt/ remote-debugging-docker
+build)
+    docker build -f debug/Dockerfile -t python-debugging .
     ;;
-Stop)
-    for id in $(docker ps | awk '/remote-debugging-docker/{print $1}'); do
+start)
+    docker run -d --rm -p 3000:3000 -v $(pwd):/opt/ python-debugging
+    ;;
+stop)
+    for id in $(docker ps | awk '/python-debugging/{print $1}'); do
         docker stop ${id}
     done
     ;;
